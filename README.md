@@ -44,4 +44,4 @@ This keeps your API key private and prevents it from being exposed in the extens
 ## 🛠 Development
 Clone the repo and load it unpacked in Chrome for local testing:
 ```bash
-git clone https://github.com/YOURUSERNAME/quickmaps.git
+git clone https://github.com/bricknermon/quickmaps.git
