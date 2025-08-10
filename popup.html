@@ -1,0 +1,109 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>QuickMaps</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <!-- Sidebar toggle -->
+    <button id="sidebarToggle" class="ghost-btn" title="Trips & History" aria-label="Open Trips & History">☰</button>
+
+    <!-- Left sidebar (collapsible) -->
+    <aside id="sidebar" aria-label="Trips & History">
+      <div class="tabs">
+        <button id="tabTrips" class="tab active">Trips</button>
+        <button id="tabHistory" class="tab">History</button>
+      </div>
+
+      <section id="panelTrips" class="panel">
+        <div class="panel-head">
+          <strong>Saved Trips</strong>
+          <div class="panel-actions">
+            <select id="tripSort" title="Sort trips">
+              <option value="newest" selected>Newest</option>
+              <option value="oldest">Oldest</option>
+              <option value="az">A–Z</option>
+              <option value="za">Z–A</option>
+            </select>
+          </div>
+        </div>
+        <ul id="tripList" class="list"></ul>
+        <div class="panel-foot note">Stores your saved searches. Use ✏ rename, 🗑 delete, ↑/↓ order.</div>
+      </section>
+
+      <section id="panelHistory" class="panel hidden">
+        <div class="panel-head">
+          <strong>History</strong>
+          <div class="panel-actions">
+            <select id="historyClearRange" title="Clear history">
+              <option value="" selected>Clear…</option>
+              <option value="hour">Last hour</option>
+              <option value="day">Last day</option>
+              <option value="week">Last week</option>
+              <option value="all">All time</option>
+            </select>
+          </div>
+        </div>
+        <div class="panel-foot note">History stores your last 50 routes (older removed).</div>
+        <ul id="historyList" class="list"></ul>
+      </section>
+    </aside>
+
+    <div class="card">
+      <header class="header">
+        <div class="brand">
+          <svg class="logo" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M10 2a2 2 0 100 4h1a3 3 0 013 3v1a3 3 0 003 3h3a2 2 0 100-4h-3a1 1 0 01-1-1V9a5 5 0 00-5-5h-1zM6 13a2 2 0 100 4h2a6 6 0 006 6h3a2 2 0 100-4h-3a2 2 0 01-2-2H8a2 2 0 01-2-2H6z"/>
+          </svg>
+          <div class="title">
+            <h1>QuickMaps</h1>
+            <p class="subtitle">Time • Distance • Directions</p>
+          </div>
+        </div>
+        <button id="saveTrip" class="btn small" title="Save current search">💾 Save Search</button>
+      </header>
+
+      <div class="toolbar"><button id="optionsToggle" class="btn small ghost" title="Options">⚙ Options</button></div>
+<div class="chips-row" id="optionsPanel"><span class="chiplabel">Suggest:</span><label class="chip"><input type="radio" name="filterType" id="chipFilterAddresses" value="addresses"><span>Addresses</span></label><label class="chip"><input type="radio" name="filterType" id="chipFilterCities" value="cities"><span>Cities</span></label><label class="chip"><input type="radio" name="filterType" id="chipFilterBoth" value="both" checked><span>Both</span></label><span class="chiplabel sep">Units:</span><label class="chip"><input type="radio" name="unitsType" id="chipUnitsMi" value="imperial" checked><span>mi</span></label><label class="chip"><input type="radio" name="unitsType" id="chipUnitsKm" value="metric"><span>km</span></label></div><form id="form" class="form" autocomplete="off">
+        <div class="field">
+          <div class="section-start"><label for="home-address">Start Address</label>
+          <div class="ac-wrap"><input id="home-address" placeholder="Start typing an address…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+          <div id="home-suggest" class="suggest" role="listbox" aria-label="Start suggestions"></div></div>
+          <label class="save"><input type="checkbox" id="home-address-save" /><span>Save</span></label>
+        </div>
+
+        <div class="action-compact"><button type="button" id="swap-btn" class="btn small ghost" title="Swap start/destination">⇄ Swap</button><button type="button" id="add-stop" class="btn small ghost" title="Add a stop">＋ Stop</button></div>
+        <div class="stopRowControls">
+          <button type="button" id="add-stop" class="btn ghost">Add stop</button>
+        </div>
+        <div id="stops"></div>
+        <div class="field">
+          <label for="destination-address">Destination Address</label>
+          <div class="ac-wrap"><div class="ac-rel"><input id="destination-address" list="dest-suggestions" placeholder="Where to?" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+          <div id="dest-custom-suggest" class="suggest" role="listbox" aria-label="Destination suggestions"></div>
+          <datalist id="dest-suggestions"></datalist>
+          
+          <div id="dest-suggest" class="suggest" role="listbox" aria-label="Destination suggestions"></div></div>
+          </div>
+          <label class="save"><input type="checkbox" id="destination-address-save" /><span>Save</span></label>
+        </div>
+
+        
+
+        <div class="action-row"><button type="button" id="submit-button" class="btn primary">Calculate</button><button type="button" id="clear-button" class="btn ghost" title="Clear fields (Ctrl+K)">Clear</button></div>
+
+        <div class="results">
+          <div id="travel-time" class="metric"></div>
+          <div id="mile-count" class="metric dim"></div>
+          <a id="directions-link" target="_blank" rel="noopener noreferrer" class="btn ghost" hidden>Open in Google Maps</a>
+        </div>
+
+        <p class="tip">Tip: Press <kbd>Enter</kbd> to calculate</p>
+      </form>
+    </div>
+
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>

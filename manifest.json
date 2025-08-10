@@ -1,0 +1,27 @@
+{
+  "manifest_version": 3,
+  "name": "QuickMaps",
+  "version": "1.0.0",
+  "description": "Time \u2022 Distance \u2022 Directions with Trips & History.",
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "QuickMaps"
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "permissions": [
+    "storage"
+  ],
+  "host_permissions": [
+    "https://*quickmaps.workers.dev/*",
+    "https://maps.googleapis.com/*"
+  ],
+  "icons": {
+    "16": "icons/16.png",
+    "32": "icons/32.png",
+    "48": "icons/48.png",
+    "128": "icons/128.png"
+  }
+}

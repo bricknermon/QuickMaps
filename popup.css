@@ -1,0 +1,308 @@
+:root{
+  --bg:#0b0e14; --card:#101623; --text:#e6e6e6; --muted:#9aa4b2;
+  --accent:#2f855a; --accent-2:#276749; --border:#1e2636; --focus:#78c2a5;
+}
+@media (prefers-color-scheme: light){
+  :root{ --bg:#f6f7fb; --card:#fff; --text:#0d1932; --muted:#566073; --accent:#2f855a; --accent-2:#276749; --border:#e6eaf2; --focus:#78c2a5; }
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font:14px/1.35 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;min-width:360px;min-height:380px;}
+
+.ghost-btn{background:#ffffff10;color:var(--text);border:1px solid var(--border);border-radius:10px;padding:6px 8px;cursor:pointer;}
+#sidebarToggle{position:absolute;left:6px;top:6px;z-index:6}
+
+#sidebar{
+  position:absolute; left:-280px; top:0; bottom:0; width:280px;
+  background:var(--card); border-right:1px solid var(--border); box-shadow:0 6px 24px rgba(0,0,0,.25);
+  border-top-right-radius:12px; border-bottom-right-radius:12px; padding:8px; z-index:5;
+  transition:left .18s ease;
+}
+#sidebar.open{ left:0; }
+.tabs{display:flex; gap:6px; margin-bottom:6px;}
+.tab{flex:1; padding:8px; border:1px solid var(--border); background:#ffffff08; color:var(--text); cursor:pointer; border-radius:8px;}
+.tab.active{background:#ffffff14;}
+.panel{display:block;}
+.panel.hidden{display:none;}
+.panel-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;}
+.panel-actions select{background:#1e2636; color:#e6e6e6; border:1px solid var(--border); border-radius:8px; padding:6px 8px;}
+.list{list-style:none; padding:0; margin:0; display:grid; gap:6px; max-height:250px; overflow:auto;}
+.list li{display:flex; gap:6px; align-items:center; justify-content:space-between; border:1px solid var(--border); border-radius:8px; padding:6px; background:#ffffff06;}
+.list .name{flex:1; text-align:left;}
+.list .actions button{margin-left:4px;}
+.note{color:var(--muted); font-size:12px; margin-top:6px;}
+
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;margin:10px 10px 10px 40px;padding:14px;box-shadow:0 4px 16px rgba(0,0,0,.18);position:relative;}
+.header{display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;}
+.brand{display:flex; gap:10px; align-items:center;}
+.logo{width:24px;height:24px;fill:var(--accent);}
+.title h1{margin:0;font-size:16px;}
+.subtitle{margin:2px 0 0;color:var(--muted);font-size:12px;}
+
+.form{display:grid;gap:10px;}
+.field{display:grid;gap:6px;}
+.field label{font-size:12px;color:var(--muted);}
+.field input[type=text], .field input[list]{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--text);outline:0;transition:border .15s,box-shadow .15s;}
+.field input[type=text]:focus, .field input[list]:focus{border-color:var(--focus);box-shadow:0 0 0 3px color-mix(in srgb,var(--focus) 30%,transparent);}
+.save{display:inline-flex;align-items:center;gap:6px;color:var(--muted);}
+.stopRowControls{display:flex; justify-content:flex-end;}
+.btn{display:inline-flex;align-items:center;justify-content:center;padding:10px 12px;border-radius:10px;cursor:pointer;border:1px solid var(--border);text-decoration:none;color:var(--text);background:#ffffff10;}
+.btn.small{padding:6px 8px;font-size:12px}
+.btn.primary{background:linear-gradient(180deg,var(--accent),var(--accent-2));border-color:transparent;color:#fff;}
+.btn.primary:disabled{opacity:.6;cursor:default;}
+.btn.ghost:hover{background:#ffffff14;}
+.btn.wide{width:100%}
+.results{display:grid;gap:8px;margin-top:4px;}
+.metric{font-weight:600;font-size:14px;}
+.metric.dim{color:var(--muted);}
+.tip{color:var(--muted);font-size:12px;margin:2px 0 0;}
+kbd{background:#00000026;border:1px solid var(--border);padding:2px 6px;border-radius:6px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;}
+#directions-link[hidden]{display:none;}
+
+body.sidebar-open .card { margin-left: 320px; } /* push content when sidebar opens */
+
+
+/* UX polish */
+.field { gap: 4px; }
+.card { padding: 16px 16px 14px; }
+.results { margin-top: 6px; }
+.list li { padding: 4px 6px; gap: 8px; }
+.list .meta { font-size: 11px; color: var(--muted); }
+.actions .btn.small { opacity: .85; }
+.actions .btn.small:hover { opacity: 1; }
+.name.editing { display: none; }
+.name-input { display: none; width: 100%; padding: 6px 8px; border-radius: 8px; border: 1px solid var(--border); background: #0000; color: var(--text); }
+.name-input.show { display: inline-block; }
+.save-flash { animation: flash 1.2s ease; }
+@keyframes flash { 0% { box-shadow: 0 0 0 0 rgba(120,194,165,.5);} 100% { box-shadow: 0 0 0 0 transparent;} }
+
+
+.action-row{ display:flex; gap:8px; }
+.action-row .btn{ flex:1; }
+
+
+.chips-row{display:flex;align-items:center;gap:8px;margin:6px 0 10px 40px;color:var(--muted);}
+.chip{display:inline-flex;align-items:center;gap:6px;background:#ffffff10;border:1px solid var(--border);border-radius:999px;padding:4px 8px;cursor:pointer;user-select:none;}
+.chip input{appearance:none;width:12px;height:12px;border:1px solid var(--border);border-radius:50%;display:inline-block;position:relative;background:#0000;}
+.chip input:checked::after{content:'';position:absolute;left:2px;top:2px;width:8px;height:8px;border-radius:50%;background:var(--focus);}
+.chiplabel{font-size:12px}
+.chiplabel.sep{margin-left:12px}
+.swap-row{display:flex;justify-content:flex-end;margin-top:-4px;margin-bottom:6px;}
+/* Subtle icon buttons near inputs could go here later */
+
+
+/* --- Compact UI pass — typography, paddings, spacing --- */
+:root{
+  --fz-base: 13px;
+  --fz-small: 12px;
+  --radius: 10px;
+  --pad-input-y: 8px;
+  --pad-input-x: 10px;
+}
+html, body { font-size: var(--fz-base); }
+
+.card{ padding:12px 14px; border-radius:14px; }
+
+.header{ gap:8px; }
+.header .title h1{ font-size:15px; }
+.subtitle{ font-size: var(--fz-small); }
+
+.form{ gap: 10px; }
+.field{ gap:4px; }
+
+.field input[type=text], .field input[list]{
+  padding: var(--pad-input-y) var(--pad-input-x);
+  border-radius: var(--radius);
+}
+
+.btn{ padding:8px 10px; border-radius: var(--radius); }
+.btn.small{ padding:5px 8px; font-size: var(--fz-small); }
+
+/* Calculate/Clear buttons inline already — reduce height a bit */
+.btn.primary{ min-height: 36px; }
+
+/* Chips row: more compact */
+.chips-row{ gap:8px; margin: 4px 0 8px 40px; }
+.chip{ padding: 2px 8px; border-radius: 999px; }
+.chip span{ font-size: var(--fz-small); }
+.chiplabel{ font-size: var(--fz-small); }
+
+/* Swap + Add stop inline and compact */
+.swap-row{ display:none; } /* hide old row if present */
+.action-compact{ display:flex; gap:8px; justify-content:flex-end; margin:6px 0; }
+#swap-btn, #add-stop{ padding:6px 8px; }
+
+/* Save checkbox row spacing */
+.save{ gap:6px; font-size: var(--fz-small); }
+
+/* Results area spacing */
+.results{ gap:6px; margin-top:6px; }
+.metric{ font-size: 13px; }
+.metric.dim{ font-size: 12px; }
+
+/* Tip text smaller */
+.tip{ font-size: 12px; margin-top: 4px; }
+kbd{ font-size: 11px; padding: 1px 6px; }
+
+/* Sidebar width stays — but reduce paddings a bit for density */
+#sidebar{ padding:6px; width: 260px; }
+body.sidebar-open .card { margin-left: 300px; }
+
+.list{ gap:6px; }
+.list li{ padding:6px; border-radius: var(--radius); }
+.list .name.btn.small{ padding:6px 8px; }
+
+
+/* ---- Ultra-compact layout ---- */
+:root{
+  --fz-base: 12px;
+  --fz-small: 11px;
+  --radius: 9px;
+  --pad-input-y: 6px;
+  --pad-input-x: 9px;
+}
+html,body{font-size:var(--fz-base);}
+.card{padding:10px 12px;border-radius:12px;}
+.header .title h1{font-size:14px}
+.subtitle{font-size:var(--fz-small)}
+.chips-row{gap:6px;margin:2px 0 6px 36px}
+.chip{padding:1px 7px}
+.chip span,.chiplabel{font-size:var(--fz-small)}
+.form{gap:8px}
+.field{gap:3px;margin-bottom:6px}
+.field label{margin-bottom:0}
+.field input[type=text], .field input[list]{padding:var(--pad-input-y) var(--pad-input-x);border-radius:var(--radius)}
+.save{gap:5px;font-size:var(--fz-small);margin-top:2px}
+.btn{padding:7px 9px;border-radius:var(--radius)}
+.btn.small{padding:4px 6px;font-size:var(--fz-small)}
+.btn.primary{min-height:32px}
+.results{gap:4px;margin-top:4px}
+.metric{font-size:12px}
+.metric.dim,.tip,kbd{font-size:11px}
+kbd{padding:1px 5px}
+
+/* Put compact action (Swap/+Stop) inline near Start label */
+.section-start{position:relative;padding-top:2px}
+.action-compact{position:absolute; right:0; top:-2px; display:flex; gap:6px}
+#swap-btn,#add-stop{padding:4px 6px}
+
+/* Hide the large "Add stop" row to save space */
+.stopRowControls{display:none}
+
+/* Tighten card margins in sidebar-open mode */
+body.sidebar-open .card{margin-left:280px}
+
+/* Inputs full width but less height */
+.field input{line-height:1.1}
+
+
+/* Fixed, slimmer popup width for extension standards */
+body { width: 360px; max-width: 360px; }
+.card { margin-right: 8px; } /* small breathing room */
+
+
+/* Don't overlap header: keep Swap/+Stop in normal flow */
+.action-compact{ position: static !important; float: right; margin: 2px 0 4px; }
+.section-start{ position: static !important; }
+
+
+.header{ display:flex; align-items:center; justify-content:space-between; }
+.header .brand{ flex:1; }
+.header .btn.small{ flex:0 0 auto; }
+
+
+/* Expand popup width when sidebar is open so it doesn't cover the main panel */
+body.sidebar-open { width: 640px; max-width: 640px; }
+#sidebar { width: 260px; }
+body.sidebar-open .card { margin-left: 260px; }
+/* Allow chips to wrap so nothing gets cut off */
+.chips-row{ display:flex; flex-wrap: wrap; }
+/* Ensure suggestion popups and chips never overflow container edges */
+.suggest-box, .suggest, .chips-row { overflow: visible; }
+
+.toolbar{display:flex;justify-content:flex-end;margin:2px 8px 6px;}
+#optionsPanel{display:none}
+#optionsPanel.open{display:flex;flex-wrap:wrap}
+
+
+/* Always-below suggestions for Destination */
+.ac-wrap{position:relative}
+.suggest{position:absolute;left:0;right:0;top:calc(100% + 4px);background:var(--card);border:1px solid var(--border);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.28);z-index:50;display:none;max-height:200px;overflow:auto}
+.suggest.show{display:block}
+.suggest .item{padding:8px 10px;cursor:pointer}
+.suggest .item:hover,.suggest .item.active{background:#ffffff12}
+
+/* Keep input styling when wrapped for custom autocomplete */
+.field .ac-wrap{ width:100%; }
+.field .ac-wrap > input[type="text"]{ width:100%; display:block; }
+
+
+/* Ensure wrapped inputs keep the same visual style as regular .field inputs */
+.field .ac-wrap > input[type="text"]{
+  width:100%;
+  padding: var(--pad-input-y) var(--pad-input-x);
+  border-radius: var(--radius);
+  border:1px solid var(--border);
+  background:transparent;
+  color:var(--text);
+  outline:0;
+  transition:border .15s, box-shadow .15s;
+}
+.field .ac-wrap > input[type="text"]:focus{
+  border-color:var(--focus);
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--focus) 30%, transparent);
+}
+
+
+/* Ensure wrapped inputs look identical (works when an extra .ac-rel exists) */
+.field .ac-wrap input[type="text"]{
+  width:100%;
+  box-sizing:border-box;
+  padding: var(--pad-input-y) var(--pad-input-x);
+  border-radius: var(--radius);
+  border:1px solid var(--border);
+  background:transparent;
+  color:var(--text);
+  outline:0;
+  transition:border .15s, box-shadow .15s;
+}
+.field .ac-wrap input[type="text"]:focus{
+  border-color:var(--focus);
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--focus) 30%, transparent);
+}
+
+
+/* === Hard-target the main inputs so they always look like Stop rows === */
+#home-address,
+#destination-address,
+[id^="stop-"] {
+  width: 100% !important;
+  box-sizing: border-box !important;
+  padding: var(--pad-input-y) var(--pad-input-x) !important;
+  border-radius: var(--radius) !important;
+  border: 1px solid var(--border) !important;
+  background: transparent !important;
+  color: var(--text) !important;
+  outline: 0 !important;
+  transition: border .15s, box-shadow .15s !important;
+}
+#home-address:focus,
+#destination-address:focus,
+[id^="stop-"]:focus {
+  border-color: var(--focus) !important;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--focus) 30%, transparent) !important;
+}
+/* Ensure wrappers never shrink the inputs */
+.field .ac-wrap,
+.field .ac-wrap .ac-rel { width: 100% !important; }
+.field .ac-wrap input[type="text"] { width: 100% !important; }
+
+
+/* Opaque dropdown for all custom autocompletes (Start/Dest/Stops) */
+.suggest{
+  background: #0f1720 !important; /* solid, no transparency */
+  opacity: 1 !important;
+  backdrop-filter: none !important;
+  z-index: 200 !important; /* above buttons */
+}
+.suggest .item{ background: transparent; }
+.suggest .item:hover,.suggest .item.active{ background: rgba(255,255,255,.08) !important; }
