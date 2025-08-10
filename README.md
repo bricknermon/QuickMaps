@@ -4,7 +4,7 @@ QuickMaps is a Chrome extension that lets you check travel time, distance, and g
 using Google Maps data — all from a fast and simple browser popup.  
 It also saves your recent searches and trips for quick access.
 
-![QuickMaps Screenshot](<img width="358" height="439" alt="Quick-Maps-Demo-Photo-1" src="https://github.com/user-attachments/assets/dcd4ffed-d5bd-4f5d-bc00-a0d0884f7c12" />)
+<img width="358" height="439" alt="Quick-Maps-Demo-Photo-1" src="https://github.com/user-attachments/assets/dcd4ffed-d5bd-4f5d-bc00-a0d0884f7c12" />
 
 ---
 
