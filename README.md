@@ -23,7 +23,7 @@ It also saves your recent searches and trips for quick access.
 - All logs are purged automatically on a rolling basis
 - You can request deletion of logs related to your IP at any time
 
-Full policy: [Privacy Policy](PRIVACY.md)
+Full policy: [Privacy Policy](https://github.com/bricknermon/QuickMaps/blob/main/PRIVACY_POLICY.md)
 
 ---
 
