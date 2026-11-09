@@ -7,8 +7,7 @@ you can export to CSV.
 
 [Install from the Chrome Web Store](https://chromewebstore.google.com/detail/quickmaps/jemlgpgigchogddmjciecgibcilfgcme)
 
-<img width="358" alt="QuickMaps" src="<img width="720" height="450" alt="demo" src="https://github.com/user-attachments/assets/2e316ac6-ddc7-4706-88d8-db2901c74c73" />
-" />
+<img width="720" height="450" alt="demo" src="https://github.com/user-attachments/assets/2e316ac6-ddc7-4706-88d8-db2901c74c73" />" 
 
 ---
 
