@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "QuickMaps",
-  "version": "1.0.0",
-  "description": "Time \u2022 Distance \u2022 Directions with Trips & History.",
+  "version": "1.7.1",
+  "description": "Travel time, distance and directions in one click — multi-stop trips, saved routes, history and mileage export.",
   "action": {
     "default_popup": "popup.html",
     "default_title": "QuickMaps"
@@ -12,12 +12,25 @@
     "type": "module"
   },
   "permissions": [
-    "storage"
+    "storage",
+    "contextMenus",
+    "sidePanel"
   ],
+  "side_panel": {
+    "default_path": "popup.html?ctx=panel"
+  },
   "host_permissions": [
-    "https://*quickmaps.workers.dev/*",
-    "https://maps.googleapis.com/*"
+    "https://ancient-wave-07fb.quickmaps.workers.dev/*"
   ],
+  "commands": {
+    "_execute_action": {
+      "suggested_key": {
+        "default": "Alt+Q",
+        "mac": "Alt+Q"
+      },
+      "description": "Open or close QuickMaps"
+    }
+  },
   "icons": {
     "16": "icons/16.png",
     "32": "icons/32.png",

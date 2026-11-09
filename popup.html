@@ -1,28 +1,28 @@
 <!doctype html>
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>QuickMaps</title>
+    <script src="theme-init.js"></script>
     <link rel="stylesheet" href="popup.css" />
   </head>
   <body>
-    <!-- Sidebar toggle -->
-    <button id="sidebarToggle" class="ghost-btn" title="Trips & History" aria-label="Open Trips & History">☰</button>
+    <button id="sidebarToggle" class="ghost-btn" title="Trips & history"
+            aria-label="Open trips and history" aria-expanded="false" aria-controls="sidebar">☰</button>
 
-    <!-- Left sidebar (collapsible) -->
-    <aside id="sidebar" aria-label="Trips & History">
-      <div class="tabs">
-        <button id="tabTrips" class="tab active">Trips</button>
-        <button id="tabHistory" class="tab">History</button>
+    <aside id="sidebar" aria-label="Trips and history">
+      <div class="tabs" role="tablist">
+        <button id="tabTrips" class="tab active" role="tab" aria-selected="true" aria-controls="panelTrips">Trips</button>
+        <button id="tabHistory" class="tab" role="tab" aria-selected="false" aria-controls="panelHistory">History</button>
       </div>
 
-      <section id="panelTrips" class="panel">
+      <section id="panelTrips" class="panel" role="tabpanel" aria-labelledby="tabTrips">
         <div class="panel-head">
-          <strong>Saved Trips</strong>
+          <strong>Saved trips</strong>
           <div class="panel-actions">
-            <select id="tripSort" title="Sort trips">
-              <option value="newest" selected>Newest</option>
+            <select id="tripSort" title="Sort trips" aria-label="Sort trips">
+              <option value="newest">Newest</option>
               <option value="oldest">Oldest</option>
               <option value="az">A–Z</option>
               <option value="za">Z–A</option>
@@ -30,77 +30,159 @@
           </div>
         </div>
         <ul id="tripList" class="list"></ul>
-        <div class="panel-foot note">Stores your saved searches. Use ✏ rename, 🗑 delete, ↑/↓ order.</div>
+        <p id="tripsEmpty" class="empty-note">No saved trips yet. Build a route and press 💾.</p>
       </section>
 
-      <section id="panelHistory" class="panel hidden">
+      <section id="panelHistory" class="panel hidden" role="tabpanel" aria-labelledby="tabHistory">
         <div class="panel-head">
           <strong>History</strong>
           <div class="panel-actions">
-            <select id="historyClearRange" title="Clear history">
-              <option value="" selected>Clear…</option>
-              <option value="hour">Last hour</option>
-              <option value="day">Last day</option>
-              <option value="week">Last week</option>
-              <option value="all">All time</option>
-            </select>
+            <button id="exportCsv" class="btn small" title="Export history to CSV">⬇ CSV</button>
+            <button id="clearHistory" class="btn small" title="Clear all history">Clear</button>
           </div>
         </div>
-        <div class="panel-foot note">History stores your last 50 routes (older removed).</div>
         <ul id="historyList" class="list"></ul>
+        <p id="historyEmpty" class="empty-note">No searches yet.</p>
+        <p id="mileageTotal" class="mileage-total" hidden></p>
       </section>
     </aside>
 
     <div class="card">
       <header class="header">
         <div class="brand">
+          <!-- Same route-and-pin mark as the toolbar icon; see icons/source/icon.svg -->
           <svg class="logo" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M10 2a2 2 0 100 4h1a3 3 0 013 3v1a3 3 0 003 3h3a2 2 0 100-4h-3a1 1 0 01-1-1V9a5 5 0 00-5-5h-1zM6 13a2 2 0 100 4h2a6 6 0 006 6h3a2 2 0 100-4h-3a2 2 0 01-2-2H8a2 2 0 01-2-2H6z"/>
+            <path d="M6.4 18.6V14.3Q6.4 11.8 8.9 11.8H13.1"
+                  fill="none" stroke="currentColor" stroke-width="2.1"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="6.4" cy="18.6" r="2.1" fill="currentColor"/>
+            <path fill-rule="evenodd" clip-rule="evenodd" fill="currentColor"
+                  d="M16.1 3.4a4.5 4.5 0 00-4.5 4.5c0 3.4 4.5 7.1 4.5 7.1s4.5-3.7 4.5-7.1a4.5 4.5 0 00-4.5-4.5zm0 2.9a1.6 1.6 0 110 3.2 1.6 1.6 0 010-3.2z"/>
           </svg>
           <div class="title">
             <h1>QuickMaps</h1>
             <p class="subtitle">Time • Distance • Directions</p>
           </div>
         </div>
-        <button id="saveTrip" class="btn small" title="Save current search">💾 Save Search</button>
+        <div class="header-actions">
+          <button id="dockToggle" class="btn small ghost" title="Open in the side panel, which stays open while you browse"
+                  aria-label="Open in the side panel">⇱</button>
+          <button id="helpToggle" class="btn small ghost" title="Keyboard shortcuts"
+                  aria-label="Keyboard shortcuts" aria-expanded="false" aria-controls="helpPanel">?</button>
+          <button id="optionsToggle" class="btn small ghost" title="Options"
+                  aria-label="Options" aria-expanded="false" aria-controls="optionsPanel">⚙</button>
+        </div>
       </header>
 
-      <div class="toolbar"><button id="optionsToggle" class="btn small ghost" title="Options">⚙ Options</button></div>
-<div class="chips-row" id="optionsPanel"><span class="chiplabel">Suggest:</span><label class="chip"><input type="radio" name="filterType" id="chipFilterAddresses" value="addresses"><span>Addresses</span></label><label class="chip"><input type="radio" name="filterType" id="chipFilterCities" value="cities"><span>Cities</span></label><label class="chip"><input type="radio" name="filterType" id="chipFilterBoth" value="both" checked><span>Both</span></label><span class="chiplabel sep">Units:</span><label class="chip"><input type="radio" name="unitsType" id="chipUnitsMi" value="imperial" checked><span>mi</span></label><label class="chip"><input type="radio" name="unitsType" id="chipUnitsKm" value="metric"><span>km</span></label></div><form id="form" class="form" autocomplete="off">
-        <div class="field">
-          <div class="section-start"><label for="home-address">Start Address</label>
-          <div class="ac-wrap"><input id="home-address" placeholder="Start typing an address…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
-          <div id="home-suggest" class="suggest" role="listbox" aria-label="Start suggestions"></div></div>
-          <label class="save"><input type="checkbox" id="home-address-save" /><span>Save</span></label>
+      <div id="optionsPanel" class="options-panel" hidden>
+        <div class="chips-row">
+          <span class="chiplabel">Theme</span>
+          <label class="chip" title="Follow your system setting"><input type="radio" name="theme" id="themeAuto" value="auto" aria-label="Theme: follow system" checked><span>Auto</span></label>
+          <label class="chip" title="Always light"><input type="radio" name="theme" id="themeLight" value="light" aria-label="Theme: always light"><span>Light</span></label>
+          <label class="chip" title="Always dark"><input type="radio" name="theme" id="themeDark" value="dark" aria-label="Theme: always dark"><span>Dark</span></label>
         </div>
 
-        <div class="action-compact"><button type="button" id="swap-btn" class="btn small ghost" title="Swap start/destination">⇄ Swap</button><button type="button" id="add-stop" class="btn small ghost" title="Add a stop">＋ Stop</button></div>
-        <div class="stopRowControls">
-          <button type="button" id="add-stop" class="btn ghost">Add stop</button>
+        <div class="chips-row">
+          <span class="chiplabel">Units</span>
+          <label class="chip" title="Miles"><input type="radio" name="unitsType" id="chipUnitsMi" value="imperial" aria-label="Miles" checked><span>mi</span></label>
+          <label class="chip" title="Kilometres"><input type="radio" name="unitsType" id="chipUnitsKm" value="metric" aria-label="Kilometres"><span>km</span></label>
         </div>
-        <div id="stops"></div>
+        <div class="chips-row">
+          <span class="chiplabel">Mode</span>
+          <label class="chip" title="Driving — includes current traffic"><input type="radio" name="travelMode" id="modeDrive" value="DRIVE" aria-label="Driving" checked><span aria-hidden="true">🚗</span></label>
+          <label class="chip" title="Walking"><input type="radio" name="travelMode" id="modeWalk" value="WALK" aria-label="Walking"><span aria-hidden="true">🚶</span></label>
+          <label class="chip" title="Cycling"><input type="radio" name="travelMode" id="modeBike" value="BICYCLE" aria-label="Cycling"><span aria-hidden="true">🚲</span></label>
+          <label class="chip" title="Public transit"><input type="radio" name="travelMode" id="modeTransit" value="TRANSIT" aria-label="Transit"><span aria-hidden="true">🚆</span></label>
+        </div>
+        <div class="chips-row">
+          <label class="chip wide-chip" title="Let Google reorder stops for the shortest trip">
+            <input type="checkbox" id="optimizeStops"><span>Optimize stop order</span>
+          </label>
+        </div>
+        <div class="chips-row row-divided">
+          <span class="chiplabel">Open in</span>
+          <label class="chip"><input type="radio" name="uiMode" id="uiPopup" value="popup" checked><span>Popup</span></label>
+          <label class="chip"><input type="radio" name="uiMode" id="uiPanel" value="panel"><span>Side panel</span></label>
+        </div>
+        <p class="options-note" id="uiModeNote">The side panel stays open while you click around a page, so you can copy an address without losing what you&rsquo;ve typed.</p>
+      </div>
+
+      <div id="helpPanel" class="help-panel" hidden>
+        <h2>Shortcuts</h2>
+        <div class="shortcut-list">
+          <div class="shortcut-item"><kbd id="shortcutKeys">Alt+Q</kbd><span>Open / close QuickMaps</span></div>
+          <div class="shortcut-item"><kbd>Esc</kbd><span>Close QuickMaps</span></div>
+          <div class="shortcut-item"><kbd>Enter</kbd><span>Accept suggestion, then calculate</span></div>
+          <div class="shortcut-item"><kbd>Ctrl</kbd>+<kbd>Enter</kbd><span>Calculate</span></div>
+          <div class="shortcut-item"><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>X</kbd><span>Swap start and destination</span></div>
+          <div class="shortcut-item"><kbd>Ctrl</kbd>+<kbd>B</kbd><span>Toggle trips &amp; history</span></div>
+          <div class="shortcut-item"><kbd>Ctrl</kbd>+<kbd>K</kbd><span>Clear the form</span></div>
+          <div class="shortcut-item"><kbd>Alt</kbd>+<kbd>H</kbd> / <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>H</kbd><span>Store / recall home</span></div>
+          <div class="shortcut-item"><kbd>Alt</kbd>+<kbd>W</kbd> / <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>W</kbd><span>Store / recall work</span></div>
+        </div>
+        <p class="help-tip">Select any address on a page, right-click, and send it straight here.</p>
+        <button type="button" id="editShortcut" class="btn small shortcut-link">Change the open shortcut</button>
+        <p class="options-note" id="shortcutFallback" hidden>
+          Paste <code>chrome://extensions/shortcuts</code> into your address bar to pick a different key.
+        </p>
+      </div>
+
+      <form id="form" class="form" autocomplete="off" novalidate>
         <div class="field">
-          <label for="destination-address">Destination Address</label>
-          <div class="ac-wrap"><div class="ac-rel"><input id="destination-address" list="dest-suggestions" placeholder="Where to?" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
-          <div id="dest-custom-suggest" class="suggest" role="listbox" aria-label="Destination suggestions"></div>
-          <datalist id="dest-suggestions"></datalist>
-          
-          <div id="dest-suggest" class="suggest" role="listbox" aria-label="Destination suggestions"></div></div>
+          <div class="field-header">
+            <span class="field-label" id="qm-from-label">Start</span>
+            <div class="field-tools">
+              <button type="button" id="clearStart" class="clear-field-btn" title="Clear start" aria-label="Clear start">×</button>
+            </div>
           </div>
-          <label class="save"><input type="checkbox" id="destination-address-save" /><span>Save</span></label>
+          <div class="ac-wrap">
+            <input id="qm-from" type="text" placeholder="Where from?"
+                   autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+                   aria-labelledby="qm-from-label"
+                   role="combobox" aria-expanded="false" aria-autocomplete="list" aria-controls="qm-from-suggest" />
+            <div id="qm-from-suggest" class="suggest" role="listbox" aria-label="Start suggestions"></div>
+          </div>
+          <label class="save"><input type="checkbox" id="qm-from-save" /><span>Remember</span></label>
         </div>
 
-        
-
-        <div class="action-row"><button type="button" id="submit-button" class="btn primary">Calculate</button><button type="button" id="clear-button" class="btn ghost" title="Clear fields (Ctrl+K)">Clear</button></div>
-
-        <div class="results">
-          <div id="travel-time" class="metric"></div>
-          <div id="mile-count" class="metric dim"></div>
-          <a id="directions-link" target="_blank" rel="noopener noreferrer" class="btn ghost" hidden>Open in Google Maps</a>
+        <div class="action-compact">
+          <button type="button" id="swap-btn" class="btn small ghost" title="Swap start and destination">⇄ Swap</button>
+          <button type="button" id="add-stop" class="btn small ghost" title="Add a stop">＋ Stop</button>
         </div>
 
-        <p class="tip">Tip: Press <kbd>Enter</kbd> to calculate</p>
+        <div id="stops"></div>
+
+        <div class="field">
+          <div class="field-header">
+            <span class="field-label" id="qm-to-label">Destination</span>
+            <div class="field-tools">
+              <button type="button" id="clearDest" class="clear-field-btn" title="Clear destination" aria-label="Clear destination">×</button>
+            </div>
+          </div>
+          <div class="ac-wrap">
+            <input id="qm-to" type="text" placeholder="Where to?"
+                   autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+                   aria-labelledby="qm-to-label"
+                   role="combobox" aria-expanded="false" aria-autocomplete="list" aria-controls="qm-to-suggest" />
+            <div id="qm-to-suggest" class="suggest" role="listbox" aria-label="Destination suggestions"></div>
+          </div>
+          <label class="save"><input type="checkbox" id="qm-to-save" /><span>Remember</span></label>
+        </div>
+
+        <div class="action-row">
+          <button type="button" id="submit-button" class="btn primary">Calculate</button>
+          <button type="button" id="clear-button" class="btn ghost">Clear</button>
+          <button type="button" id="saveTrip" class="btn ghost" title="Save this route">💾</button>
+        </div>
+
+        <div class="results" id="results" aria-live="polite" aria-atomic="true" hidden>
+          <button type="button" id="travel-time" class="metric metric-btn" title="Copy travel time"></button>
+          <button type="button" id="mile-count" class="metric metric-btn dim" title="Copy distance"></button>
+          <div id="result-note" class="result-note" hidden></div>
+          <a id="directions-link" target="_blank" rel="noopener noreferrer" class="btn ghost" hidden>🗺 Open in Maps</a>
+        </div>
+
+        <div id="error-box" class="error-box" role="alert" hidden></div>
       </form>
     </div>
 
